@@ -35,11 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Skip JWT authentication for WebSocket endpoints
+        // Skip JWT authentication for WebSocket endpoints and auth endpoints
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/ws/") || 
+            requestURI.startsWith("/api/auth/") ||
             "websocket".equalsIgnoreCase(request.getHeader("Upgrade"))) {
-            logger.info("Skipping JWT authentication for WebSocket endpoint: {}", requestURI);
+            logger.info("Skipping JWT authentication for endpoint: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
