@@ -33,6 +33,9 @@ public class AuthController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Token and email are required"));
             }
 
+            // For now, trust the Supabase token and just check if user exists
+            // TODO: Add proper Supabase JWT validation using Supabase's public key
+            
             // Check if user exists in our database
             Optional<User> existingUser = userService.findByEmail(email);
             
