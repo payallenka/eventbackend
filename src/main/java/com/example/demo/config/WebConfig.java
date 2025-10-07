@@ -13,8 +13,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173", "https://eventfront-iota.vercel.app")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+                        .allowedOriginPatterns("http://localhost:*", "https://eventfront-iota.vercel.app")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
                         .allowedHeaders("*")
                         .exposedHeaders("*")
                         .allowCredentials(true)
