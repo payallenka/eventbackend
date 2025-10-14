@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.model.Task;
 import com.example.demo.model.Event;
+import com.example.demo.model.Attendee;
 import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.EventRepository;
+import com.example.demo.repository.AttendeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +20,8 @@ public class TaskService {
     private TaskRepository taskRepository;
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private AttendeeRepository attendeeRepository;
 
     public List<Task> getTasksByEvent(UUID eventId) {
         return taskRepository.findByEventId(eventId);
@@ -41,6 +46,16 @@ public class TaskService {
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isPresent()) {
             task.setEvent(eventOpt.get());
+            // Set deadline if present
+            if (task.getDeadline() != null) {
+                task.setDeadline(task.getDeadline());
+            }
+            // Set assignedAttendee if present
+            if (task.getAssignedAttendee() != null && task.getAssignedAttendee().getId() != null) {
+                attendeeRepository.findById(task.getAssignedAttendee().getId()).ifPresent(task::setAssignedAttendee);
+            } else {
+                task.setAssignedAttendee(null);
+            }
             return taskRepository.save(task);
         }
         throw new RuntimeException("Event not found");
@@ -83,7 +98,6 @@ public class TaskService {
     public Task updateTask(UUID taskId, Task updated) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
-        
         // Only update fields that are not null to preserve existing data
         if (updated.getTitle() != null) {
             task.setTitle(updated.getTitle());
@@ -93,7 +107,16 @@ public class TaskService {
         }
         // Always update completed status as it's a boolean
         task.setCompleted(updated.isCompleted());
-        
+        // Update deadline if present
+        if (updated.getDeadline() != null) {
+            task.setDeadline(updated.getDeadline());
+        }
+        // Update assignedAttendee if present
+        if (updated.getAssignedAttendee() != null && updated.getAssignedAttendee().getId() != null) {
+            attendeeRepository.findById(updated.getAssignedAttendee().getId()).ifPresent(task::setAssignedAttendee);
+        } else if (updated.getAssignedAttendee() == null) {
+            task.setAssignedAttendee(null);
+        }
         return taskRepository.save(task);
     }
 

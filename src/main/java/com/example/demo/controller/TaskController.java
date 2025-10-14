@@ -64,4 +64,14 @@ public class TaskController {
         int fixedCount = taskService.fixNullTaskData(eventId);
         return ResponseEntity.ok("Fixed " + fixedCount + " tasks with null data");
     }
+    
+    // In createTask and updateTask, deadline and assignedAttendee fields are now supported in the Task payload.
+    // Example JSON for update:
+    // {
+    //   "title": "Task Title",
+    //   "description": "Desc",
+    //   "completed": false,
+    //   "deadline": "2025-10-14",
+    //   "assignedAttendee": { "id": "<attendee-uuid>" }
+    // }
 }
