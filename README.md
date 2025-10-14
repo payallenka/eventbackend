@@ -61,7 +61,7 @@ This is the Spring Boot backend for the Event Management Dashboard. It provides 
 ## Database
 - Uses PostgreSQL (Supabase compatible)
 - Entities: Event, Attendee, Task, User
-  ![DB design](./dbDesign)
+  ![DB design](./dbDesignWebknot.png)
 
 ## Real-Time Updates
 - WebSocket endpoint for task progress updates
